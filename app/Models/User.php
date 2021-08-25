@@ -77,9 +77,9 @@ class User extends Authenticatable implements JWTSubject
 
     /**
      * @param array $request
-     * @return Builder|Model|object
+     * @return User
      */
-    public function createACustomer(array $request)
+    public function createACustomer(array $request): User
     {
         $customerType = UserType::customer();
 
