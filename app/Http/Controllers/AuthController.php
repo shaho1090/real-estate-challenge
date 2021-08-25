@@ -27,12 +27,7 @@ class AuthController extends Controller
             return response()->json(['error' => $validator->messages()], 200);
         }
 
-        //Request is valid, create new user
-        $user = User::query()->create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password)
-        ]);
+        $user = (new User())->createACustomer($request->toArray());
 
         //User created, return success response
         return response()->json([
