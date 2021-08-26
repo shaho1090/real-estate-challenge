@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -97,5 +98,35 @@ class User extends Authenticatable implements JWTSubject
         $this->save();
 
         return $this;
+    }
+
+    public function homes(): HasMany
+    {
+        return $this->hasMany(Home::class,'customer_id');
+    }
+
+    /**
+     * @param array $request
+     * @return Model
+     */
+    public function createHome(array $request): Model
+    {
+          $home = $this->homes()->make();
+
+          $home->attributes['zip_code'] = $request['zip_code'];
+          $home->attributes['purpose'] = $request['purpose'];
+          $home->attributes['title'] = $request['title'];
+          $home->attributes['type_id'] = $request['type_id'];
+          $home->attributes['price'] = $request['price'];
+          $home->attributes['bedrooms'] = $request['bedrooms'];
+          $home->attributes['bathrooms'] = $request['bathrooms'];
+          $home->attributes['condition_id'] = $request['condition_id'];
+          $home->attributes['m_two'] = $request['m_two'];
+          $home->attributes['price_m_two'] = $request['price_m_two'];
+          $home->attributes['address'] = $request['address'];
+
+          $home->save();
+
+          return $home;
     }
 }
