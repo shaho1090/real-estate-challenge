@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\HomeCondition;
+use App\Models\HomeType;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,5 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         (new UserTypeSeeder())->run();
+        (new HomeConditionSeeder())->run();
+        (new HomeTypeSeeder())->run();
     }
 }
