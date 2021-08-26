@@ -20,7 +20,7 @@ class CreateHomesTable extends Migration
             $table->foreignId('customer_id')->constrained('users', 'id');
             $table->string('zip_code',10);
             $table->string('address');
-            $table->foreignId('type_id')->nullable()->constrained('home_types', 'id');
+            $table->foreignId('type_id')->constrained('home_types', 'id');
             $table->unsignedBigInteger('price');
             $table->string('bedrooms'); // 1 - 2 - 3 - 4 - +4
             $table->string('bathrooms'); //  1 - 2 - 3 - +3
