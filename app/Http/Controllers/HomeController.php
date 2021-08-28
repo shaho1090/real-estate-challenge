@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\HomeResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +16,7 @@ class HomeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'The home was created successfully',
-            'data' => $home
+            'data' => new HomeResource($home)
         ], Response::HTTP_OK);
     }
 }

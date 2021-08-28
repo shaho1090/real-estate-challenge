@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -27,13 +28,13 @@ class AuthController extends Controller
             return response()->json(['error' => $validator->messages()], 200);
         }
 
-        $user = (new User())->createACustomer($request->toArray());
+        $user = (new User())->createCustomer($request->toArray());
 
         //User created, return success response
         return response()->json([
             'success' => true,
             'message' => 'User created successfully',
-            'data' => $user
+            'data' => new UserResource($user)
         ], Response::HTTP_OK);
     }
 
