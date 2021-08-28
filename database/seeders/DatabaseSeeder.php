@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         (new UserTypeSeeder())->run();
         (new HomeConditionSeeder())->run();
         (new HomeTypeSeeder())->run();
+        (new UserSeeder())->run();
     }
 }
