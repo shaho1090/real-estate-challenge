@@ -1,18 +1,29 @@
 <?php
 
-use App\Http\Controllers\AppointmentController;
+use App\Models\Appointment;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/appointment/create', [AppointmentController::class, 'store'])
-    ->middleware(['api'])
-    ->name('create-appointment');
+//------------- admin's routes for appointment -------------------------------------
+Route::middleware(['api'])->prefix('/admin')->group(function () {
 
-Route::get('/appointments', [AppointmentController::class, 'index'])
-    ->middleware(['api'])
-    ->name('appointments');
+    Route::post('/appointments/create', [\App\Http\Controllers\Admin\AppointmentController::class, 'store'])
+        ->name('create-appointment')
+        ->middleware('can:create,' . Appointment::class);
 
-//Route::middleware(['api'])->prefix('auth')->group(function () {
-//    Route::post('logout', [AuthController::class, 'logout']);
-//    Route::post('refresh', [AuthController::class, 'refresh']);
-//    Route::post('me', [AuthController::class, 'me']);
-//});
+    Route::get('/appointments', [\App\Http\Controllers\Admin\AppointmentController::class, 'index'])
+        ->name('all-appointments');
+});
+
+//--------------------employee's routes for appointment ----------------------------
+Route::middleware(['api'])->prefix('/employee')->group(function () {
+    Route::get('/my-appointments', [\App\Http\Controllers\Employee\MyAppointmentController::class, 'index'])
+        ->name('employee-my-appointments');
+});
+
+
+//-------------------customer's routes for appointment
+Route::middleware(['api'])->prefix('/customer')->group(function () {
+    Route::get('/my-appointments', [\App\Http\Controllers\Employee\MyAppointmentController::class, 'index'])
+        ->name('customer-my-appointments');
+});
+
