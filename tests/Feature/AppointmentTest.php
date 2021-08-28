@@ -178,4 +178,61 @@ class AppointmentTest extends TestCase
             ->assertUnauthorized()
             ->assertStatus(401);
     }
+
+    public function test_the_employee_can_start_time_of_its_appointment()
+    {
+        $employee = User::factory()->employee()->hasAppointments(3)->create();
+        $appointment = $employee->appointments()->get()->last();
+
+        $this->be($employee);
+
+        $this->assertNull($appointment->start_time);
+
+        $this->patchJson(route('start-my-appointment',$appointment))
+        ->assertStatus(200);
+
+        $appointment->refresh();
+
+        $this->assertNotNull($appointment->start_time);
+    }
+
+    public function test_the_employee_can_not_start_the_appointment_of_others()
+    {
+        $employee = User::factory()->employee()->hasAppointments(3)->create();
+        $employeeTwo = User::factory()->employee()->hasAppointments(3)->create();
+
+        $appointment = $employeeTwo->appointments()->get()->last();
+
+        $this->be($employee);
+
+        $this->assertNull($appointment->start_time);
+
+        $this->patchJson(route('start-my-appointment',$appointment))
+            ->assertStatus(401);
+
+        $appointment->refresh();
+
+        $this->assertNull($appointment->start_time);
+    }
+
+    public function test_the_employee_can_end_its_appointment()
+    {
+        $this->withoutExceptionHandling();
+
+        $employee = User::factory()->employee()->hasAppointments(3)->create();
+        $appointment = $employee->appointments()->get()->last();
+
+        $this->be($employee);
+
+        $appointment->start();
+
+        $this->assertNull($appointment->end_time);
+
+        $this->patchJson(route('end-my-appointment',$appointment))
+            ->assertStatus(200);
+
+        $appointment->refresh();
+
+        $this->assertNotNull($appointment->end_time);
+    }
 }

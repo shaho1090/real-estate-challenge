@@ -48,4 +48,48 @@ class Appointment extends Model
 
         return $this;
     }
+
+    /**
+     * @throws Exception
+     */
+    public function start(): Appointment
+    {
+        if($this->isStarted()){
+            throw new Exception('This appointment already is started!');
+        }
+
+        $this->attributes['start_time'] = Carbon::now()->toDateTimeString();
+        $this->save();
+
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function end(): Appointment
+    {
+        if(!$this->isStarted()){
+            throw new Exception('This appointment is not started yet!');
+        }
+
+        if($this->isEnded()){
+            throw new Exception('This appointment already is ended!');
+        }
+
+        $this->attributes['end_time'] = Carbon::now()->toDateTimeString();
+        $this->save();
+
+        return $this;
+    }
+
+    public function isStarted(): bool
+    {
+       return $this->attributes['start_time'] !== null;
+    }
+
+    public function isEnded(): bool
+    {
+        return $this->attributes['end_time'] !== null;
+    }
 }
