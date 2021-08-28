@@ -51,7 +51,7 @@ class HomeTest extends TestCase
             'address' => $this->faker->address,
         ];
 
-        $this->postJson(route('create-home'), $homeData)
+        $this->postJson(route('customer-home-create'), $homeData)
             ->assertJsonFragment([
                 "message" => "The home was created successfully"
             ])->assertStatus(200);

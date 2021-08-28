@@ -16,7 +16,7 @@ class AuthTest extends TestCase
     /**
      * @var array
      */
-    private $userData;
+    private array $userData;
 
     public function setUp(): void
     {
