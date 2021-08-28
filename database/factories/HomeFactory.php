@@ -7,6 +7,7 @@ use App\Models\HomeCondition;
 use App\Models\HomeType;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class HomeFactory extends Factory
 {
@@ -27,7 +28,7 @@ class HomeFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'purpose' => 'sell',
-            'zip_code'=> $this->faker->word,
+            'zip_code'=> Str::random(6),
             'address' => $this->faker->address,
             'price' => rand(1000,500000),
             'bedrooms' => (string)rand(0,8),
