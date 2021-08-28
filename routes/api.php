@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 require __DIR__.'/auth.php';
 require __DIR__.'/home.php';
+require __DIR__.'/appointment.php';
 
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();
