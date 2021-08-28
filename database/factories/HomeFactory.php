@@ -25,7 +25,7 @@ class HomeFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => $this->faker->title,
+            'title' => $this->faker->sentence,
             'purpose' => 'sell',
             'zip_code'=> $this->faker->word,
             'address' => $this->faker->address,
