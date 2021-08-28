@@ -5,9 +5,7 @@ namespace Tests\Feature;
 use App\Models\HomeCondition;
 use App\Models\HomeType;
 use Database\Seeders\DatabaseSeeder;
-use Dflydev\DotAccessData\Data;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class HomeTest extends TestCase
@@ -53,7 +51,7 @@ class HomeTest extends TestCase
             'address' => $this->faker->address,
         ];
 
-        $this->postJson(route('create-home'), $homeData)->dump()
+        $this->postJson(route('create-home'), $homeData)
             ->assertJsonFragment([
                 "message" => "The home was created successfully"
             ])->assertStatus(200);
