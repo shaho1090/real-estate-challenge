@@ -102,8 +102,6 @@ class AppointmentTest extends TestCase
 
     public function test_the_non_admin_users_can_not_create_an_appointment()
     {
-//        $this->withoutExceptionHandling();
-
         $employee = User::factory()->employee()->create();
         $customer = User::factory()->customer()->create();
 
@@ -117,19 +115,67 @@ class AppointmentTest extends TestCase
 
         $this->postJson(route('create-appointment'), $appointmentData)
             ->assertJsonFragment([
-                "message" =>"This action is unauthorized."
+                "message" => "This action is unauthorized."
             ])
             ->assertStatus(403);
 
         $this->be($customer);
 
-        $this->assertEquals(UserType::customer()->id,auth()->user()->type_id);
+        $this->assertEquals(UserType::customer()->id, auth()->user()->type_id);
 
         $this->postJson(route('create-appointment'), $appointmentData)
             ->assertJsonFragment([
-                "message" =>"This action is unauthorized."
+                "message" => "This action is unauthorized."
             ])
             ->assertStatus(403);
     }
 
+    public function test_employee_can_see_an_appointment()
+    {
+        $this->withoutExceptionHandling();
+
+        $employee = User::factory()->employee()->hasAppointments(5)->create();
+
+        $this->be($employee);
+
+        $appointment = $employee->appointments()->first();
+
+        $this->getJson(route('employee-my-appointment', $appointment))
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                "name" => $employee->name,
+                "family" => $employee->family,
+                "email" => $employee->email,
+            ])
+            ->assertJsonFragment([
+                "title" => $appointment->home->title,
+                "purpose" => $appointment->home->purpose,
+                "zip_code" => $appointment->home->zip_code,
+                "address" => $appointment->home->address,
+                "price" => $appointment->home->price,
+                "bedrooms" => $appointment->home->bedrooms,
+                "bathrooms" => $appointment->home->bathrooms,
+                "m_two" => $appointment->home->m_two,
+                "price_m_two" => $appointment->home->price_m_two,
+            ])
+            ->assertJsonFragment([
+                'expected_date_time' => Carbon::parse($appointment->date)->toDateTimeString()
+            ]);
+    }
+
+    public function test_the_employee_can_not_see_an_appointment_of_other_employee()
+    {
+        $this->withoutExceptionHandling();
+
+        $employee = User::factory()->employee()->hasAppointments(3)->create();
+        $employeeTwo = User::factory()->employee()->hasAppointments(3)->create();
+
+        $this->be($employee);
+
+        $employeeTwoAppointment = $employeeTwo->appointments()->first();
+
+        $this->getJson(route('employee-my-appointment',$employeeTwoAppointment))
+            ->assertUnauthorized()
+            ->assertStatus(401);
+    }
 }

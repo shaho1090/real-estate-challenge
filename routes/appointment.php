@@ -18,6 +18,10 @@ Route::middleware(['api'])->prefix('/admin')->group(function () {
 Route::middleware(['api'])->prefix('/employee')->group(function () {
     Route::get('/my-appointments', [\App\Http\Controllers\Employee\MyAppointmentController::class, 'index'])
         ->name('employee-my-appointments');
+
+    Route::get(
+        '/my-appointments/{appointment}', [\App\Http\Controllers\Employee\MyAppointmentController::class, 'show'])
+        ->name('employee-my-appointment');
 });
 
 
