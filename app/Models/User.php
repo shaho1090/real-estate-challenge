@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Builder;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use mysql_xdevapi\Exception;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -79,8 +77,9 @@ class User extends Authenticatable implements JWTSubject
     /**
      * @param array $request
      * @return User
+     * @throws Exception
      */
-    public function createACustomer(array $request): User
+    public function createCustomer(array $request): User
     {
         $customerType = UserType::customer();
 
@@ -128,5 +127,21 @@ class User extends Authenticatable implements JWTSubject
           $home->save();
 
           return $home;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function isAdmin(): bool
+    {
+        if(!$adminType = UserType::query()->where('title','admin')->first()){
+            throw new Exception('The user type was not found!');
+        }
+
+        if($this->type_id === $adminType->id){
+            return true;
+        }
+
+        return false;
     }
 }
