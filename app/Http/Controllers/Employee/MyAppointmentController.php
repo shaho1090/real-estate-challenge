@@ -7,7 +7,7 @@ use App\Http\Resources\AppointmentCollection;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class AppointmentController extends Controller
+class MyAppointmentController extends Controller
 {
     public function index(): JsonResponse
     {
