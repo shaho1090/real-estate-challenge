@@ -58,4 +58,22 @@ class UserFactory extends Factory
             ];
         });
     }
+
+    public function employee(): UserFactory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'type_id' => UserType::query()->where('title','employee')->first()->id,
+            ];
+        });
+    }
+
+    public function customer(): UserFactory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'type_id' => UserType::query()->where('title','customer')->first()->id,
+            ];
+        });
+    }
 }
