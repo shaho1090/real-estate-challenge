@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -143,5 +144,15 @@ class User extends Authenticatable implements JWTSubject
         }
 
         return false;
+    }
+
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class,'employee_id');
+    }
+
+    public function getAppointments(): Collection
+    {
+        return $this->appointments()->get();
     }
 }
