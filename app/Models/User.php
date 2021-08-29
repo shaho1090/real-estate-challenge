@@ -13,6 +13,10 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+/**
+ * Class User
+ * @package App\Models
+ */
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -80,7 +84,7 @@ class User extends Authenticatable implements JWTSubject
      * @return User
      * @throws Exception
      */
-    public function createLandlord(array $request): User
+    public function createLandlordType(array $request): User
     {
         $landlordType = UserType::landlord();
 
@@ -88,13 +92,34 @@ class User extends Authenticatable implements JWTSubject
             throw new Exception('The landlord type was not found!');
         }
 
+        return $this->createNewUser($landlordType,$request);
+    }
+
+    /**
+     * @param array $request
+     * @return User
+     * @throws Exception
+     */
+    public function createCustomerType(array $request): User
+    {
+        $landlordType = UserType::landlord();
+
+        if(is_null($landlordType)){
+            throw new Exception('The landlord type was not found!');
+        }
+
+        return $this->createNewUser($landlordType,$request);
+    }
+
+    private function createNewUser($userType, array $request): User
+    {
         $this->attributes['name'] = $request['name'];
         $this->attributes['family'] = $request['family'];
         $this->attributes['phone'] = $request['phone'];
         $this->attributes['email'] = $request['email'];
         $this->attributes['address'] = $request['address'];
         $this->attributes['password'] = bcrypt($request['password']);
-        $this->attributes['type_id'] = $landlordType->id;
+        $this->attributes['type_id'] = $userType->id;
         $this->save();
 
         return $this;
