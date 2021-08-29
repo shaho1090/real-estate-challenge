@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\HomeCondition;
 use App\Models\HomeType;
+use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -33,7 +34,9 @@ class HomeTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->signIn();
+        $landlordUser = User::factory()->landlord()->create();
+
+        $this->be($landlordUser);
 
         $this->assertAuthenticated();
 

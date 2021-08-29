@@ -25,7 +25,7 @@ class AuthTest extends TestCase
         (new DatabaseSeeder())->run();
     }
 
-    public function registerAUser()
+    public function registerALandlordUser()
     {
         $this->userData = [
             'name' => $this->faker->name,
@@ -36,13 +36,28 @@ class AuthTest extends TestCase
             'address' => $this->faker->address,
         ];
 
-        $this->postJson(route('register'), $this->userData);
+        $this->postJson(route('landlord-register'), $this->userData);
     }
 
-    public function test_a_user_can_register()
+    public function registerACustomerUser()
     {
-        $this->withoutExceptionHandling();
+        $this->userData = [
+            'name' => $this->faker->name,
+            'family' => $this->faker->lastName,
+            'phone' => $this->faker->phoneNumber,
+            'email' => $this->faker->email,
+            'password' => $this->faker->password,
+            'address' => $this->faker->address,
+        ];
 
+        $this->postJson(route('customer-register'), $this->userData);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function test_a_landlord_can_register()
+    {
         $userData = [
             'name' => $this->faker->name,
             'family' => $this->faker->lastName,
@@ -52,7 +67,7 @@ class AuthTest extends TestCase
             'address' => $this->faker->address,
         ];
 
-        $this->postJson(route('register'), $userData)
+        $this->postJson(route('landlord-register'), $userData)
             ->assertJsonFragment([
                 "success" => true,
                 "message" => "User created successfully"
@@ -71,11 +86,25 @@ class AuthTest extends TestCase
         ]);
     }
 
-    public function test_the_user_can_login_and_get_jwt_token()
+    public function test_a_landlord_user_can_login_and_get_jwt_token()
     {
-        $this->registerAUser();
+        $this->registerALandlordUser();
 
-        $this->assertNotNull(User::first());
+        $this->assertNotNull(User::query()->first());
+
+        $this->postJson(route('login'),[
+            'email' => $this->userData['email'],
+            'password' => $this->userData['password']
+        ])->assertSeeText('access_token', 'barear');
+
+        $this->assertAuthenticated();
+    }
+
+    public function test_a_customer_user_can_login_and_get_jwt_token()
+    {
+        $this->registerACustomerUser();
+
+        $this->assertNotNull(User::query()->first());
 
         $this->postJson(route('login'),[
             'email' => $this->userData['email'],
