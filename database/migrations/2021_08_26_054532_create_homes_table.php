@@ -17,7 +17,7 @@ class CreateHomesTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('purpose');//rent -- buy
-            $table->foreignId('customer_id')->constrained('users', 'id');
+            $table->foreignId('landlord_id')->constrained('users', 'id');
             $table->string('zip_code',10);
             $table->string('address');
             $table->foreignId('type_id')->constrained('home_types', 'id');

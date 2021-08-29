@@ -103,7 +103,7 @@ class AppointmentTest extends TestCase
     public function test_the_non_admin_users_can_not_create_an_appointment()
     {
         $employee = User::factory()->employee()->create();
-        $customer = User::factory()->customer()->create();
+        $landlord = User::factory()->landlord()->create();
 
         $this->be($employee);
 
@@ -119,9 +119,9 @@ class AppointmentTest extends TestCase
             ])
             ->assertStatus(403);
 
-        $this->be($customer);
+        $this->be($landlord);
 
-        $this->assertEquals(UserType::customer()->id, auth()->user()->type_id);
+        $this->assertEquals(UserType::landlord()->id, auth()->user()->type_id);
 
         $this->postJson(route('create-appointment'), $appointmentData)
             ->assertJsonFragment([

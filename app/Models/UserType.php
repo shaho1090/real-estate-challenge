@@ -17,9 +17,9 @@ class UserType extends Model
         return $this->hasMany(User::class,'type_id');
     }
 
-    public static function customer()
+    public static function landlord()
     {
-        return self::query()->where('title','customer')->first();
+        return self::query()->where('title','landlord')->first();
     }
 
     public static function employee()

@@ -29,7 +29,7 @@ class HomeTest extends TestCase
         ];
     }
 
-    public function test_a_customer_can_create_a_home()
+    public function test_a_landlord_can_create_a_home()
     {
         $this->withoutExceptionHandling();
 
@@ -51,7 +51,7 @@ class HomeTest extends TestCase
             'address' => $this->faker->address,
         ];
 
-        $this->postJson(route('customer-home-create'), $homeData)
+        $this->postJson(route('landlord-home-create'), $homeData)
             ->assertJsonFragment([
                 "message" => "The home was created successfully"
             ])->assertStatus(200);

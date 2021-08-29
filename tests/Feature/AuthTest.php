@@ -67,7 +67,7 @@ class AuthTest extends TestCase
             'email' => $userData['email'],
             'phone' => $userData['phone'],
             'address' => $userData['address'],
-            'type_id' => UserType::customer()->id
+            'type_id' => UserType::landlord()->id
         ]);
     }
 

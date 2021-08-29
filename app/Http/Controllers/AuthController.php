@@ -28,7 +28,7 @@ class AuthController extends Controller
             return response()->json(['error' => $validator->messages()], 200);
         }
 
-        $user = (new User())->createCustomer($request->toArray());
+        $user = (new User())->createLandlord($request->toArray());
 
         //User created, return success response
         return response()->json([

@@ -68,11 +68,11 @@ class UserFactory extends Factory
         });
     }
 
-    public function customer(): UserFactory
+    public function landlord(): UserFactory
     {
         return $this->state(function (array $attributes) {
             return [
-                'type_id' => UserType::query()->where('title','customer')->first()->id,
+                'type_id' => UserType::query()->where('title','landlord')->first()->id,
             ];
         });
     }

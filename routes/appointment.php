@@ -38,9 +38,9 @@ Route::middleware(['api'])->prefix('/employee')->group(function () {
 });
 
 
-//-------------------customer's routes for appointment
-Route::middleware(['api'])->prefix('/customer')->group(function () {
+//-------------------landlord's routes for appointment
+Route::middleware(['api'])->prefix('/landlord')->group(function () {
     Route::get('/my-appointments', [\App\Http\Controllers\Employee\MyAppointmentController::class, 'index'])
-        ->name('customer-my-appointments');
+        ->name('landlord-my-appointments');
 });
 

@@ -80,12 +80,12 @@ class User extends Authenticatable implements JWTSubject
      * @return User
      * @throws Exception
      */
-    public function createCustomer(array $request): User
+    public function createLandlord(array $request): User
     {
-        $customerType = UserType::customer();
+        $landlordType = UserType::landlord();
 
-        if(is_null($customerType)){
-            throw new Exception('The customer type was not found!');
+        if(is_null($landlordType)){
+            throw new Exception('The landlord type was not found!');
         }
 
         $this->attributes['name'] = $request['name'];
@@ -94,7 +94,7 @@ class User extends Authenticatable implements JWTSubject
         $this->attributes['email'] = $request['email'];
         $this->attributes['address'] = $request['address'];
         $this->attributes['password'] = bcrypt($request['password']);
-        $this->attributes['type_id'] = $customerType->id;
+        $this->attributes['type_id'] = $landlordType->id;
         $this->save();
 
         return $this;
@@ -102,7 +102,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function homes(): HasMany
     {
-        return $this->hasMany(Home::class,'customer_id');
+        return $this->hasMany(Home::class,'landlord_id');
     }
 
     /**

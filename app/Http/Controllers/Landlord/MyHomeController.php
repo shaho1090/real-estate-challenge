@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Customer;
+namespace App\Http\Controllers\Landlord;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\HomeResource;
