@@ -13,31 +13,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-    public function register(Request $request): JsonResponse
-    {
-        //Validate data
-        $data = $request->only('name', 'email', 'password');
-        $validator = Validator::make($data, [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6|max:50'
-        ]);
-
-        //Send failed response if request is not valid
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->messages()], 200);
-        }
-
-        $user = (new User())->createLandlord($request->toArray());
-
-        //User created, return success response
-        return response()->json([
-            'success' => true,
-            'message' => 'User created successfully',
-            'data' => new UserResource($user)
-        ], Response::HTTP_OK);
-    }
-
     public function authenticate(Request $request): JsonResponse
     {
         $credentials = $request->only('email', 'password');
