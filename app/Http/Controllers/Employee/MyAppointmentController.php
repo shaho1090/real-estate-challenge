@@ -41,5 +41,4 @@ class MyAppointmentController extends Controller
             'data' => new AppointmentResource($appointment)
         ], Response::HTTP_OK);
     }
-
 }
