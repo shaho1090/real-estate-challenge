@@ -18,6 +18,7 @@ class UserTypeSeeder extends Seeder
             ['title' => 'landlord'],
             ['title' => 'admin'],
             ['title' => 'employee'],
+            ['title' => 'customer'],
         ]);
     }
 }

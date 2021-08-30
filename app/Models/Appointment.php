@@ -29,6 +29,11 @@ class Appointment extends Model
         return $this->belongsTo(Home::class,'home_id');
     }
 
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(User::class,'customer_id');
+    }
+
     /**
      * @param array $request
      * @return Appointment
@@ -42,6 +47,7 @@ class Appointment extends Model
 
         $this->attributes['employee_id'] = $request['employee_id'];
         $this->attributes['home_id'] = $request['home_id'];
+        $this->attributes['customer_id'] = $request['customer_id'];
         $this->attributes['date'] = Carbon::parse($request['date'])->toDateTimeString();
 
         $this->save();

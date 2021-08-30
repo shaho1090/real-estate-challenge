@@ -47,8 +47,9 @@ class AppointmentTest extends TestCase
         $this->assertAuthenticated();
 
         $appointmentData = [
-            'employee_id' => User::factory()->create()->id,
+            'employee_id' => User::factory()->employee()->create()->id,
             'home_id' => Home::factory()->create()->id,
+            'customer_id' => User::factory()->customer()->create()->id,
             'date' => Carbon::now()->toDateTimeString(),
         ];
 
@@ -58,45 +59,46 @@ class AppointmentTest extends TestCase
         $this->assertDatabaseHas('appointments', [
             'employee_id' => $appointmentData['employee_id'],
             'home_id' => $appointmentData['home_id'],
+            'customer_id' => $appointmentData['customer_id'],
             'date' => Carbon::parse($appointmentData['date'])->toDateTimeString()
         ]);
     }
 
     public function test_the_employee_can_see_its_appointments()
     {
-        $employee = User::factory()->employee()->hasAppointments(3)->create();
-        $employeeTwo = User::factory()->employee()->hasAppointments(3)->create();
+        $employee = User::factory()->employee()->hasEmployeeAppointments(3)->create();
+        $employeeTwo = User::factory()->employee()->hasEmployeeAppointments(3)->create();
 
         $this->be($employee);
 
         $this->getJson(route('employee-my-appointments'))
             ->assertJsonFragment([
-                "title" => $employee->appointments()->first()->home->title,
-                "purpose" => $employee->appointments()->first()->home->purpose,
-                "zip_code" => $employee->appointments()->first()->home->zip_code,
-                "address" => $employee->appointments()->first()->home->address,
-                "price" => $employee->appointments()->first()->home->price,
-                "bedrooms" => $employee->appointments()->first()->home->bedrooms,
-                "bathrooms" => $employee->appointments()->first()->home->bathrooms,
+                "title" => $employee->employeeAppointments()->first()->home->title,
+                "purpose" => $employee->employeeAppointments()->first()->home->purpose,
+                "zip_code" => $employee->employeeAppointments()->first()->home->zip_code,
+                "address" => $employee->employeeAppointments()->first()->home->address,
+                "price" => $employee->employeeAppointments()->first()->home->price,
+                "bedrooms" => $employee->employeeAppointments()->first()->home->bedrooms,
+                "bathrooms" => $employee->employeeAppointments()->first()->home->bathrooms,
             ])
             ->assertJsonFragment([
-                "title" => $employee->appointments()->get()->last()->home->title,
-                "purpose" => $employee->appointments()->get()->last()->home->purpose,
-                "zip_code" => $employee->appointments()->get()->last()->home->zip_code,
-                "address" => $employee->appointments()->get()->last()->home->address,
-                "price" => $employee->appointments()->get()->last()->home->price,
-                "bedrooms" => $employee->appointments()->get()->last()->home->bedrooms,
-                "bathrooms" => $employee->appointments()->get()->last()->home->bathrooms,
+                "title" => $employee->employeeAppointments()->get()->last()->home->title,
+                "purpose" => $employee->employeeAppointments()->get()->last()->home->purpose,
+                "zip_code" => $employee->employeeAppointments()->get()->last()->home->zip_code,
+                "address" => $employee->employeeAppointments()->get()->last()->home->address,
+                "price" => $employee->employeeAppointments()->get()->last()->home->price,
+                "bedrooms" => $employee->employeeAppointments()->get()->last()->home->bedrooms,
+                "bathrooms" => $employee->employeeAppointments()->get()->last()->home->bathrooms,
             ])
             ->assertJsonMissing([
-                "title" => $employeeTwo->appointments()->first()->home->title,
-                "zip_code" => $employeeTwo->appointments()->first()->home->zip_code,
-                "address" => $employeeTwo->appointments()->first()->home->address,
+                "title" => $employeeTwo->employeeAppointments()->first()->home->title,
+                "zip_code" => $employeeTwo->employeeAppointments()->first()->home->zip_code,
+                "address" => $employeeTwo->employeeAppointments()->first()->home->address,
             ])
             ->assertJsonMissing([
-                "title" => $employeeTwo->appointments()->get()->last()->home->title,
-                "zip_code" => $employeeTwo->appointments()->get()->last()->home->zip_code,
-                "address" => $employeeTwo->appointments()->get()->last()->home->address,
+                "title" => $employeeTwo->employeeAppointments()->get()->last()->home->title,
+                "zip_code" => $employeeTwo->employeeAppointments()->get()->last()->home->zip_code,
+                "address" => $employeeTwo->employeeAppointments()->get()->last()->home->address,
             ]);
     }
 
@@ -134,11 +136,11 @@ class AppointmentTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $employee = User::factory()->employee()->hasAppointments(5)->create();
+        $employee = User::factory()->employee()->hasEmployeeAppointments(5)->create();
 
         $this->be($employee);
 
-        $appointment = $employee->appointments()->first();
+        $appointment = $employee->employeeAppointments()->first();
 
         $this->getJson(route('employee-my-appointment', $appointment))
             ->assertStatus(200)
@@ -167,12 +169,12 @@ class AppointmentTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $employee = User::factory()->employee()->hasAppointments(3)->create();
-        $employeeTwo = User::factory()->employee()->hasAppointments(3)->create();
+        $employee = User::factory()->employee()->hasEmployeeAppointments(3)->create();
+        $employeeTwo = User::factory()->employee()->hasEmployeeAppointments(3)->create();
 
         $this->be($employee);
 
-        $employeeTwoAppointment = $employeeTwo->appointments()->first();
+        $employeeTwoAppointment = $employeeTwo->employeeAppointments()->first();
 
         $this->getJson(route('employee-my-appointment',$employeeTwoAppointment))
             ->assertUnauthorized()
@@ -181,8 +183,8 @@ class AppointmentTest extends TestCase
 
     public function test_the_employee_can_start_time_of_its_appointment()
     {
-        $employee = User::factory()->employee()->hasAppointments(3)->create();
-        $appointment = $employee->appointments()->get()->last();
+        $employee = User::factory()->employee()->hasEmployeeAppointments(3)->create();
+        $appointment = $employee->employeeAppointments()->get()->last();
 
         $this->be($employee);
 
@@ -198,10 +200,10 @@ class AppointmentTest extends TestCase
 
     public function test_the_employee_can_not_start_the_appointment_of_others()
     {
-        $employee = User::factory()->employee()->hasAppointments(3)->create();
-        $employeeTwo = User::factory()->employee()->hasAppointments(3)->create();
+        $employee = User::factory()->employee()->hasEmployeeAppointments(3)->create();
+        $employeeTwo = User::factory()->employee()->hasEmployeeAppointments(3)->create();
 
-        $appointment = $employeeTwo->appointments()->get()->last();
+        $appointment = $employeeTwo->employeeAppointments()->get()->last();
 
         $this->be($employee);
 
@@ -219,8 +221,8 @@ class AppointmentTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $employee = User::factory()->employee()->hasAppointments(3)->create();
-        $appointment = $employee->appointments()->get()->last();
+        $employee = User::factory()->employee()->hasEmployeeAppointments(3)->create();
+        $appointment = $employee->employeeAppointments()->get()->last();
 
         $this->be($employee);
 

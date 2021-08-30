@@ -17,6 +17,7 @@ class CreateAppointmentsTable extends Migration
             $table->id();
             $table->foreignId('employee_id')->constrained('users','id');
             $table->foreignId('home_id')->constrained('homes','id');
+            $table->foreignId('customer_id')->constrained('users','id');
             $table->dateTime('date');
             $table->dateTime('start_time')->nullable();
             $table->dateTime('end_time')->nullable();

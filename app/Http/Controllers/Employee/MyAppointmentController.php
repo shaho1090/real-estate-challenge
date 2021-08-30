@@ -16,7 +16,7 @@ class MyAppointmentController extends Controller
 {
     public function index(): JsonResponse
     {
-        $appointments = auth()->user()->getAppointments();
+        $appointments = auth()->user()->getEmployeeAppointments();
 
         return response()->json([
             'success' => true,

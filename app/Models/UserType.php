@@ -51,10 +51,10 @@ class UserType extends Model
      */
     private static function getUserType(string $type)
     {
-        if(!$type = self::query()->where('title',$type)->first()){
+        if(!$userType = self::query()->where('title',$type)->first()){
             throw new Exception('The '.$type.' user type was not found!');
         }
 
-        return $type;
+        return $userType;
     }
 }

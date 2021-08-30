@@ -79,6 +79,31 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(UserType::class,'type_id');
     }
 
+    public function homes(): HasMany
+    {
+        return $this->hasMany(Home::class,'landlord_id');
+    }
+
+    public function employeeAppointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class,'employee_id');
+    }
+
+    public function customerAppointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class,'customer_id');
+    }
+
+    public function getEmployeeAppointments(): Collection
+    {
+        return $this->employeeAppointments()->get();
+    }
+
+    public function getCustomerAppointments(): Collection
+    {
+        return $this->customerAppointments()->get();
+    }
+
     /**
      * @param array $request
      * @return User
@@ -125,11 +150,6 @@ class User extends Authenticatable implements JWTSubject
         return $this;
     }
 
-    public function homes(): HasMany
-    {
-        return $this->hasMany(Home::class,'landlord_id');
-    }
-
     /**
      * @param array $request
      * @return Model
@@ -169,15 +189,5 @@ class User extends Authenticatable implements JWTSubject
         }
 
         return false;
-    }
-
-    public function appointments(): HasMany
-    {
-        return $this->hasMany(Appointment::class,'employee_id');
-    }
-
-    public function getAppointments(): Collection
-    {
-        return $this->appointments()->get();
     }
 }
