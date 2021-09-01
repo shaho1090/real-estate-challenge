@@ -16,7 +16,8 @@ class Appointment extends Model
     protected $fillable = [
         'date',
         'start_time',
-        'end_time'
+        'end_time',
+        'estimated_distance_time'
     ];
 
     public function employee():BelongsTo
@@ -56,10 +57,23 @@ class Appointment extends Model
     }
 
     /**
+     * @return $this
      * @throws Exception
      */
-    public function start(): Appointment
+    public function startFromOffice(): Appointment
     {
+
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function start(string $origin): Appointment
+    {
+        if($origin === 'office'){
+
+        }
+
         if($this->isStarted()){
             throw new Exception('This appointment already is started!');
         }

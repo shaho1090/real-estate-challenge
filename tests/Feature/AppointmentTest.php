@@ -176,7 +176,7 @@ class AppointmentTest extends TestCase
 
         $employeeTwoAppointment = $employeeTwo->employeeAppointments()->first();
 
-        $this->getJson(route('employee-my-appointment',$employeeTwoAppointment))
+        $this->getJson(route('employee-my-appointment', $employeeTwoAppointment))
             ->assertUnauthorized()
             ->assertStatus(401);
     }
@@ -190,8 +190,8 @@ class AppointmentTest extends TestCase
 
         $this->assertNull($appointment->start_time);
 
-        $this->patchJson(route('start-my-appointment',$appointment))
-        ->assertStatus(200);
+        $this->patchJson(route('start-my-appointment', $appointment))
+            ->assertStatus(200);
 
         $appointment->refresh();
 
@@ -209,7 +209,7 @@ class AppointmentTest extends TestCase
 
         $this->assertNull($appointment->start_time);
 
-        $this->patchJson(route('start-my-appointment',$appointment))
+        $this->patchJson(route('start-my-appointment', $appointment))
             ->assertStatus(401);
 
         $appointment->refresh();
@@ -230,11 +230,32 @@ class AppointmentTest extends TestCase
 
         $this->assertNull($appointment->end_time);
 
-        $this->patchJson(route('end-my-appointment',$appointment))
+        $this->patchJson(route('end-my-appointment', $appointment))
             ->assertStatus(200);
 
         $appointment->refresh();
 
         $this->assertNotNull($appointment->end_time);
+    }
+
+    public function test_when_an_employee_start_the_appointment_the_estimated_time_calculate_based_on_zipcodes()
+    {
+//        $this->withoutExceptionHandling();
+
+        $employee = User::factory()->employee()->hasEmployeeAppointments(3)->create();
+        $appointment = $employee->employeeAppointments()->first();
+
+        $this->be($employee);
+
+        $this->patchJson(route('start-my-appointment', $appointment), [
+            'origin_zipcode' => $this->chelsfieldZipcodes[2]
+        ])->dump()
+            ->assertStatus(200);
+//
+//        $this->assertDatabaseHas('appointments', [
+//            'estimated_distance_time' =>
+//        ]);
+
+        $this->assertNotNull($appointment->estimated_distance_time);
     }
 }
