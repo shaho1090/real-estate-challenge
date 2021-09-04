@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
         $adminType = DB::table('user_types')
             ->where('title','admin')
             ->first();
+
         DB::table('users')->insert([
             'name' => 'shaho',
             'family' => 'parivni',
