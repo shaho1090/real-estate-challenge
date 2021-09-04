@@ -14,7 +14,7 @@ class Postcode implements ZipCodeConverterInterface
     public function __construct($zipCode)
     {
         $this->zipCode = $zipCode;
-        $this->apiAddress = config('postcodes.address');
+        $this->setConfiguration();
     }
 
     public function getApiAddress()
@@ -40,5 +40,10 @@ class Postcode implements ZipCodeConverterInterface
         }
 
         return ($response->object()->result->latitude . ',' . $response->object()->result->longitude);
+    }
+
+    public function setConfiguration()
+    {
+        $this->apiAddress = config('postcodes.address');
     }
 }
