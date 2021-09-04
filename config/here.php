@@ -8,7 +8,7 @@
 
 return [
 
-    'token' => env('ROUTING_API_HERE_KEY'),
+    'token' => env('HERE_ROUTING_API_KEY'),
 
     'address' => 'https://router.hereapi.com/v8/routes'
 ];
