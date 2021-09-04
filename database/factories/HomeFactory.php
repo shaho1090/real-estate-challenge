@@ -25,10 +25,18 @@ class HomeFactory extends Factory
      */
     public function definition(): array
     {
+        $zipCodes = [
+            'BR66EN',
+            'BR66ER',
+            'BR67PU',
+            'BR67QA',
+            'BR67RA'
+        ];
+
         return [
             'title' => $this->faker->sentence,
             'purpose' => 'sell',
-            'zip_code'=> Str::random(6),
+            'zip_code'=> $zipCodes[array_rand($zipCodes)],
             'address' => $this->faker->address,
             'price' => rand(1000,500000),
             'bedrooms' => (string)rand(0,8),
