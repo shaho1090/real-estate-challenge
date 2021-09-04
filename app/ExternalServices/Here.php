@@ -30,8 +30,15 @@ class Here implements DistanceEstimatorInterface
         $this->apiAddress = config('here.address');
     }
 
+    /**
+     * @throws \Exception
+     */
     private function handle()
     {
+        if (is_null($this->apiKey)) {
+            throw new \Exception('You should register and get and set api key from HERE website.');
+        }
+
         $query = [
             'apiKey' => $this->apiKey,
             'transportMode' => 'car',
