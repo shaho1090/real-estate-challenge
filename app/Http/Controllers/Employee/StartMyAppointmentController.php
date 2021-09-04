@@ -20,10 +20,10 @@ class StartMyAppointmentController extends Controller
         if (auth()->id() !== (integer)$appointment->employee_id) {
             return response()->json([
                 'success' => false,
-            ], Response::HTTP_UNAUTHORIZED);
+            ],Response::HTTP_UNAUTHORIZED);
         }
 
-        $appointment->start($request->input('origin_zipcode'));
+        $appointment->start($request->input('origin'));
 
         return response()->json([
             'success' => true,
