@@ -80,9 +80,14 @@ class AuthController extends Controller
      * Log the user out (Invalidate the token).
      *
      * @return JsonResponse
+     * @throws \Exception
      */
     public function logout(): JsonResponse
     {
+        if(!auth()->check()){
+            return response()->json(['message' => 'You are already logged out!']);
+        }
+
         auth()->logout();
 
         return response()->json(['message' => 'Successfully logged out']);

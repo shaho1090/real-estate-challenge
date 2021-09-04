@@ -15,14 +15,8 @@ Route::post('/landlord-register', [LandlordRegisterController::class, 'register'
 Route::post('/customer-register', [CustomerRegisterController::class, 'register'])
     ->name('customer-register');
 
-//Route::middleware(['api'])->prefix('auth')->group(function () {
-//    Route::post('logout', [AuthController::class, 'logout']);
-//    Route::post('refresh', [AuthController::class, 'refresh']);
-//    Route::post('me', [AuthController::class, 'me']);
-//});
-
-//Route::middleware(['api'])->prefix('auth')->group(function () {
-//    Route::post('logout', [AuthController::class, 'logout']);
-//    Route::post('refresh', [AuthController::class, 'refresh']);
-//    Route::post('me', [AuthController::class, 'me']);
-//});
+Route::middleware(['api'])->group(function () {
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::post('me', [AuthController::class, 'me']);
+});
