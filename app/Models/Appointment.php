@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Distance;
+use App\RealEstateOffice;
 use Carbon\CarbonPeriod;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,22 +19,22 @@ class Appointment extends Model
         'date',
         'start_time',
         'end_time',
-        'estimated_distance_time'
+        'distance_estimated_time'
     ];
 
-    public function employee():BelongsTo
+    public function employee(): BelongsTo
     {
-        return $this->belongsTo(User::class,'employee_id');
+        return $this->belongsTo(User::class, 'employee_id');
     }
 
     public function home(): BelongsTo
     {
-        return $this->belongsTo(Home::class,'home_id');
+        return $this->belongsTo(Home::class, 'home_id');
     }
 
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(User::class,'customer_id');
+        return $this->belongsTo(User::class, 'customer_id');
     }
 
     /**
@@ -42,7 +44,7 @@ class Appointment extends Model
      */
     public function createNewAppointment(array $request): Appointment
     {
-        if(!User::query()->find($request['employee_id'])->type_id === UserType::employee()->id){
+        if (!User::query()->find($request['employee_id'])->type_id === UserType::employee()->id) {
             throw new Exception('The type the user is not employee for appointment!');
         }
 
@@ -62,23 +64,34 @@ class Appointment extends Model
      */
     public function startFromOffice(): Appointment
     {
+        $distanceEstimatedTime =
+            (new Distance(RealEstateOffice::zipCode(), $this->home()->first()->zip_code))
+                ->estimate()->inMinute();
 
+        $this->attributes['start_time'] = Carbon::now()->toDateTimeString();
+        $this->attributes['distance_estimated_time'] = $distanceEstimatedTime;
+        $this->save();
+
+        return $this;
+    }
+
+    public function getLatestAppointmentZipCode()
+    {
+        return (new MyAppointment())->getLatest()->home()->first()->zip_code;
     }
 
     /**
+     * @return $this
      * @throws Exception
      */
-    public function start(string $origin): Appointment
+    public function startFromPreviousAppointment(): Appointment
     {
-        if($origin === 'office'){
-
-        }
-
-        if($this->isStarted()){
-            throw new Exception('This appointment already is started!');
-        }
+        $distanceEstimatedTime =
+            (new Distance($this->getLatestAppointmentZipCode(), $this->home()->first()->zip_code))
+                ->estimate()->inMinute();
 
         $this->attributes['start_time'] = Carbon::now()->toDateTimeString();
+        $this->attributes['distance_estimated_time'] = $distanceEstimatedTime;
         $this->save();
 
         return $this;
@@ -87,13 +100,29 @@ class Appointment extends Model
     /**
      * @throws Exception
      */
+    public function start(string $origin): Appointment
+    {
+        if ($this->isStarted()) {
+            throw new Exception('This appointment already is started!');
+        }
+
+        if ($origin === 'office') {
+            return $this->startFromOffice();
+        }
+
+        return $this->startFromPreviousAppointment();
+    }
+
+    /**
+     * @throws Exception
+     */
     public function end(): Appointment
     {
-        if(!$this->isStarted()){
+        if (!$this->isStarted()) {
             throw new Exception('This appointment is not started yet!');
         }
 
-        if($this->isEnded()){
+        if ($this->isEnded()) {
             throw new Exception('This appointment already is ended!');
         }
 
@@ -105,7 +134,7 @@ class Appointment extends Model
 
     public function isStarted(): bool
     {
-       return $this->attributes['start_time'] !== null;
+        return $this->attributes['start_time'] !== null;
     }
 
     public function isEnded(): bool
