@@ -7,10 +7,8 @@ use App\Models\User;
 use App\Models\UserType;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
-use Tymon\JWTAuth\JWTAuth;
 
 class AppointmentTest extends TestCase
 {
@@ -92,12 +90,10 @@ class AppointmentTest extends TestCase
             ])
             ->assertJsonMissing([
                 "title" => $employeeTwo->employeeAppointments()->first()->home->title,
-                "zip_code" => $employeeTwo->employeeAppointments()->first()->home->zip_code,
                 "address" => $employeeTwo->employeeAppointments()->first()->home->address,
             ])
             ->assertJsonMissing([
                 "title" => $employeeTwo->employeeAppointments()->get()->last()->home->title,
-                "zip_code" => $employeeTwo->employeeAppointments()->get()->last()->home->zip_code,
                 "address" => $employeeTwo->employeeAppointments()->get()->last()->home->address,
             ]);
     }
@@ -190,7 +186,9 @@ class AppointmentTest extends TestCase
 
         $this->assertNull($appointment->start_time);
 
-        $this->patchJson(route('start-my-appointment', $appointment))
+        $this->patchJson(route('start-my-appointment', $appointment),[
+            'origin' => 'office'
+        ])
             ->assertStatus(200);
 
         $appointment->refresh();
@@ -209,7 +207,9 @@ class AppointmentTest extends TestCase
 
         $this->assertNull($appointment->start_time);
 
-        $this->patchJson(route('start-my-appointment', $appointment))
+        $this->patchJson(route('start-my-appointment', $appointment),[
+            'origin' => 'office'
+        ])
             ->assertStatus(401);
 
         $appointment->refresh();
@@ -226,7 +226,7 @@ class AppointmentTest extends TestCase
 
         $this->be($employee);
 
-        $appointment->start();
+        $appointment->start('office');
 
         $this->assertNull($appointment->end_time);
 
@@ -238,24 +238,36 @@ class AppointmentTest extends TestCase
         $this->assertNotNull($appointment->end_time);
     }
 
-    public function test_when_an_employee_start_the_appointment_the_estimated_time_calculate_based_on_zipcodes()
+    public function
+    test_when_an_employee_start_the_appointment_the_estimated_time_is_calculated_based_on_office_zip_code_or_latest_appointment()
     {
-//        $this->withoutExceptionHandling();
+       $this->withoutExceptionHandling();
 
-        $employee = User::factory()->employee()->hasEmployeeAppointments(3)->create();
-        $appointment = $employee->employeeAppointments()->first();
+        $employee = User::factory()->employee()->hasEmployeeAppointments(2)->create();
+        $firstAppointment = $employee->employeeAppointments()->first();
+        $lastAppointment = $employee->employeeAppointments()->get()->last();
 
         $this->be($employee);
 
-        $this->patchJson(route('start-my-appointment', $appointment), [
-            'origin_zipcode' => $this->chelsfieldZipcodes[2]
-        ])->dump()
+        $this->patchJson(route('start-my-appointment', $firstAppointment), [
+            'origin' => 'office'
+        ])
             ->assertStatus(200);
-//
-//        $this->assertDatabaseHas('appointments', [
-//            'estimated_distance_time' =>
-//        ]);
 
-        $this->assertNotNull($appointment->estimated_distance_time);
+
+        $firstAppointment->refresh();
+
+        $this->assertNotNull($firstAppointment->distance_estimated_time);
+
+        $firstAppointment->end();
+
+        $this->patchJson(route('start-my-appointment', $lastAppointment), [
+            'origin' => 'previous_appointment'
+        ])
+            ->assertStatus(200);
+
+        $lastAppointment->refresh();
+
+        $this->assertNotNull($lastAppointment->distance_estimated_time);
     }
 }
