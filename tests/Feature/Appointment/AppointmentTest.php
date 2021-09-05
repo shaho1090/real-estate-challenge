@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Appointment;
 
 use App\Models\Home;
 use App\Models\User;
