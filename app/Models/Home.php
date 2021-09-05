@@ -32,6 +32,11 @@ class Home extends Model
         return $this->belongsTo(HomeType::class,'type_id');
     }
 
+    public function landlord(): BelongsTo
+    {
+        return $this->belongsTo(User::class,'landlord_id');
+    }
+
     public function storeNew()
     {
 
