@@ -196,10 +196,11 @@ class User extends Authenticatable implements JWTSubject
      */
     public function isLandlord():bool
     {
-        if($this->type_id === UserType::landlord()->id){
-            return true;
-        }
+        return $this->type_id === (integer)UserType::landlord()->id;
+    }
 
-        return false;
+    public function isOwnerOfHome(Home $home): bool
+    {
+      return $this->id === (integer)$home->landlord_id;
     }
 }
