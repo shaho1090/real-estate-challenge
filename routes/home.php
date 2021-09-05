@@ -16,4 +16,8 @@ Route::middleware(['api'])->prefix('/landlord')->group(function () {
     Route::get('/homes/{home}', [MyHomeController::class, 'show'])
         ->name('landlord-home-show')
         ->middleware('can:view,home');
+
+    Route::patch('/homes/{home}', [MyHomeController::class, 'update'])
+        ->name('landlord-home-update')
+        ->middleware('can:update,home');
 });
