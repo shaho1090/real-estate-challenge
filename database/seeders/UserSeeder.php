@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
             'family' => 'parivni',
             'phone' => '989189799672',
             'email' => 'shaho.parivni@gmail.com',
-            'password' => bcrypt('Sh123456'),
+            'password' => bcrypt('12345678'),
             'address' => 'simple address',
             'type_id' => $adminType->id
         ]);
