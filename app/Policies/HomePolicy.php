@@ -32,7 +32,7 @@ class HomePolicy
      */
     public function view(User $user, Home $home)
     {
-        return ($user->isOwnerOfHome($home) || $user->isAdmin()) ;
+        return ($user->isOwnerOfHome($home) || $user->isAdmin());
     }
 
     /**
@@ -50,13 +50,14 @@ class HomePolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Home  $home
+     * @param \App\Models\User $user
+     * @param \App\Models\Home $home
      * @return \Illuminate\Auth\Access\Response|bool
+     * @throws \Exception
      */
     public function update(User $user, Home $home)
     {
-        //
+        return ($user->isOwnerOfHome($home) || $user->isAdmin());
     }
 
     /**
