@@ -154,7 +154,7 @@ class User extends Authenticatable implements JWTSubject
      * @param array $request
      * @return Model
      */
-    public function createHome(array $request): Model
+    public function createNewHome(array $request): Model
     {
           $home = $this->homes()->make();
 

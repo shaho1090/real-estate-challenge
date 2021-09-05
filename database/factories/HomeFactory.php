@@ -44,7 +44,7 @@ class HomeFactory extends Factory
             'm_two' => rand(40,200),
             'price_m_two' => rand(100,50000),
             'landlord_id' => User::factory()->create()->id,
-            'type_id' => HomeType::query()->find(rand(1,4))->id,
+            'type_id' => HomeType::query()->find(rand(1,5))->id,
             'condition_id'=> HomeCondition::query()->find(rand(1,3))->id
         ];
     }
