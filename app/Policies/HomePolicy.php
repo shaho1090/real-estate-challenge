@@ -32,7 +32,7 @@ class HomePolicy
      */
     public function view(User $user, Home $home)
     {
-        return $user->isLandlord() || $user->isAdmin();
+        return ($user->isOwnerOfHome($home) || $user->isAdmin()) ;
     }
 
     /**
