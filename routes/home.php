@@ -12,4 +12,8 @@ Route::middleware(['api'])->prefix('/landlord')->group(function () {
     Route::get('/homes', [MyHomeController::class, 'index'])
         ->name('landlord-home-index')
         ->middleware('can:viewAny,' . Home::class);
+
+    Route::get('/homes/{home}', [MyHomeController::class, 'show'])
+        ->name('landlord-home-show')
+        ->middleware('can:view,home');
 });
