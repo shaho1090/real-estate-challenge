@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\HomeStoreRequest;
 use App\Http\Resources\HomeCollection;
 use App\Http\Resources\HomeResource;
+use App\Models\Home;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class MyHomeController extends Controller
@@ -16,10 +18,16 @@ class MyHomeController extends Controller
         $homes = auth()->user()->homes;
 
         return response()->json([
-            'success' => true,
             'data' => new HomeCollection($homes)
         ]);
 
+    }
+
+    public function show(Home $home): JsonResponse
+    {
+        return response()->json([
+            'data' => new HomeResource($home)
+        ]);
     }
 
     public function store(HomeStoreRequest $request): JsonResponse
