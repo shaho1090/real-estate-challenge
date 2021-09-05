@@ -190,4 +190,16 @@ class User extends Authenticatable implements JWTSubject
 
         return false;
     }
+
+    /**
+     * @throws Exception
+     */
+    public function isLandlord():bool
+    {
+        if($this->type_id === UserType::landlord()->id){
+            return true;
+        }
+
+        return false;
+    }
 }
