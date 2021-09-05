@@ -19,7 +19,9 @@ class Home extends Model
         'bedrooms',
         'bathrooms',
         'm_two',
-        'price_m_two'
+        'price_m_two',
+        'type_id',
+        'condition_id'
     ];
 
     public function condition():belongsTO
@@ -35,10 +37,5 @@ class Home extends Model
     public function landlord(): BelongsTo
     {
         return $this->belongsTo(User::class,'landlord_id');
-    }
-
-    public function storeNew()
-    {
-
     }
 }
