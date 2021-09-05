@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
-class StartStopAppointmentTest extends TestCase
+class AppointmentStartStopTest extends TestCase
 {
     use RefreshDatabase;
 
