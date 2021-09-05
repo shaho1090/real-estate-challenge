@@ -33,8 +33,6 @@ class HomeTest extends TestCase
 
     public function test_a_landlord_can_create_a_home()
     {
-//        $this->withoutExceptionHandling();
-
         $landlordUser = User::factory()->landlord()->create();
 
         $this->be($landlordUser);
@@ -63,16 +61,77 @@ class HomeTest extends TestCase
 
     public function test_the_landlord_can_see_all_its_homes()
     {
-        //        $this->withoutExceptionHandling();
-
         $landlordUser = User::factory()->landlord()->hasHomes(3)->create();
 
         $this->be($landlordUser);
 
         $this->assertAuthenticated();
 
-        $this->getJson(route('landlord-home-index'))->dump();
-//            ])->assertStatus(200);
+        $this->getJson(route('landlord-home-index'))
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                "title" => $landlordUser->homes()->first()->title,
+                "purpose" => $landlordUser->homes()->first()->purpose,
+                "zip_code" => $landlordUser->homes()->first()->zip_code,
+                "address" => $landlordUser->homes()->first()->address,
+                "price" => $landlordUser->homes()->first()->price,
+                "bedrooms" => $landlordUser->homes()->first()->bedrooms,
+                "bathrooms" => $landlordUser->homes()->first()->bathrooms,
+                "m_two" => $landlordUser->homes()->first()->m_two,
+                "price_m_two" => $landlordUser->homes()->first()->price_m_two,
+            ])->assertJsonFragment([
+                "title" => $landlordUser->homes()->get()->last()->title,
+                "purpose" => $landlordUser->homes()->get()->last()->purpose,
+                "zip_code" => $landlordUser->homes()->get()->last()->zip_code,
+                "address" => $landlordUser->homes()->get()->last()->address,
+                "price" => $landlordUser->homes()->get()->last()->price,
+                "bedrooms" => $landlordUser->homes()->get()->last()->bedrooms,
+                "bathrooms" => $landlordUser->homes()->get()->last()->bathrooms,
+                "m_two" => $landlordUser->homes()->get()->last()->m_two,
+                "price_m_two" => $landlordUser->homes()->get()->last()->price_m_two,
+            ]);
+    }
+
+    public function test_the_landlord_can_see_a_home_belongs_to_him()
+    {
+        $landlordUser = User::factory()->landlord()->hasHomes(3)->create();
+
+        $this->be($landlordUser);
+
+        $this->assertAuthenticated();
+
+        $this->getJson(route('landlord-home-show',$landlordUser->homes()->get()->last()))
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                "title" => $landlordUser->homes()->get()->last()->title,
+                "purpose" => $landlordUser->homes()->get()->last()->purpose,
+                "zip_code" => $landlordUser->homes()->get()->last()->zip_code,
+                "address" => $landlordUser->homes()->get()->last()->address,
+                "price" => $landlordUser->homes()->get()->last()->price,
+                "bedrooms" => $landlordUser->homes()->get()->last()->bedrooms,
+                "bathrooms" => $landlordUser->homes()->get()->last()->bathrooms,
+                "m_two" => $landlordUser->homes()->get()->last()->m_two,
+                "price_m_two" => $landlordUser->homes()->get()->last()->price_m_two,
+            ]);
+    }
+
+    public function test_a_landlord_can_not_see_other_landlord_s_home()
+    {
+        $landlordUser = User::factory()->landlord()->hasHomes(3)->create();
+        $landlordUserTwo = User::factory()->landlord()->hasHomes(3)->create();
+
+        $this->be($landlordUser);
+
+        $this->assertAuthenticated();
+
+        $this->getJson(route('landlord-home-show',$landlordUserTwo->homes()->get()->last()))
+            ->assertStatus(403)
+            ->assertJsonFragment([
+                "message" => "This action is unauthorized."
+            ])->assertJsonMissing([
+                "title" => $landlordUser->homes()->get()->last()->title,
+                "address" => $landlordUser->homes()->get()->last()->address,
+            ]);
     }
 
     public function test_zip_code_is_required_for_creating_home()
@@ -556,7 +615,7 @@ class HomeTest extends TestCase
             'bedrooms' => '3',
             'bathrooms' => '2',
             'condition_id' => HomeCondition::query()->find(rand(1, 3))->id,
-            'm_two' =>  rand(70, 500),
+            'm_two' => rand(70, 500),
             'price_m_two' => '4564sdfs',
             'address' => $this->faker->address,
         ];
