@@ -176,6 +176,4 @@ class AppointmentTest extends TestCase
             ->assertUnauthorized()
             ->assertStatus(401);
     }
-
-//    public function test_a_customer_can_store_request_for_
 }
