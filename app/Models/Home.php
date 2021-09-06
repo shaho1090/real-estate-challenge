@@ -38,4 +38,9 @@ class Home extends Model
     {
         return $this->belongsTo(User::class,'landlord_id');
     }
+
+    public function getAll()
+    {
+        return $this->query()->get();
+    }
 }
