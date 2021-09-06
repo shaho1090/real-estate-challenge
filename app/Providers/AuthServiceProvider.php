@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\Appointment;
 use App\Models\Home;
+use App\Models\User;
 use App\Policies\AppointmentPolicy;
 use App\Policies\HomePolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -20,6 +22,7 @@ class AuthServiceProvider extends ServiceProvider
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
          Appointment::class => AppointmentPolicy::class,
          Home::class => HomePolicy::class,
+         User::class => UserPolicy::class,
     ];
 
     /**
