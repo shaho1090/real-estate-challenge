@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\AppointmentConfig;
 use App\Distance;
 use App\RealEstateOffice;
 use Carbon\CarbonPeriod;
@@ -140,5 +141,20 @@ class Appointment extends Model
     public function isEnded(): bool
     {
         return $this->attributes['end_time'] !== null;
+    }
+
+    public function probableEmployeeFreeTime(): ?string
+    {
+        if($this->isEnded()){
+            return 'ended';
+        }
+
+        if((!is_null($this->start_time)) && (!is_null($this->distance_estimated_time))){
+               return Carbon::parse($this->start_time)
+                   ->addMinutes($this->distance_estimated_time + AppointmentConfig::duration())
+                   ->toDateTimeString();
+        }
+
+        return null;
     }
 }
