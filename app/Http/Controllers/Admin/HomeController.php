@@ -21,9 +21,11 @@ class HomeController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
+        $homes = (new Home())->getAll();
+
         return response()->json([
             'success' => true,
-            'data' => new HomeCollection(Home::query()->get())
+            'data' => new HomeCollection($homes)
         ], Response::HTTP_OK);
     }
 
