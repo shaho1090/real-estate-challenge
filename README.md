@@ -1,5 +1,5 @@
 **A Real Estate Agency Challenge:** <br/><br/>
-I have almost completed this app. As always I have used the TDD method for creating this app.<br/> You can see the tests and understand the app. Although, I am going to describe it, in this app:<br/>
+I have almost completed this back-end API's. As always I have used the TDD method for creating this app.<br/> You can see the tests and understand the app. Although, I am going to describe it, in this app:<br/>
 - you can register as a landlord, who has a house to rent or sell,
 - as a landlord after registering you can log in and get a JWT token for using the app,
 - a landlord can store a home,
