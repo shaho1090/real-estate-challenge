@@ -71,6 +71,7 @@ class HomeVisibilityTest extends TestCase
         $this->getJson(route('landlord-home-index'))
             ->assertStatus(200)
             ->assertJsonFragment([
+                'id' => $landlordUser->homes()->first()->id,
                 "title" => $landlordUser->homes()->first()->title,
                 "purpose" => $landlordUser->homes()->first()->purpose,
                 "zip_code" => $landlordUser->homes()->first()->zip_code,
@@ -81,6 +82,7 @@ class HomeVisibilityTest extends TestCase
                 "m_two" => $landlordUser->homes()->first()->m_two,
                 "price_m_two" => $landlordUser->homes()->first()->price_m_two,
             ])->assertJsonFragment([
+                'id' => $landlordUser->homes()->get()->last()->id,
                 "title" => $landlordUser->homes()->get()->last()->title,
                 "purpose" => $landlordUser->homes()->get()->last()->purpose,
                 "zip_code" => $landlordUser->homes()->get()->last()->zip_code,
@@ -192,6 +194,66 @@ class HomeVisibilityTest extends TestCase
                 "id" => $selectedHome->id,
                 "title" => $selectedHome->title,
                 "purpose" => $selectedHome->purpose,
+            ]);
+    }
+
+    public function test_a_customer_can_see_homes_without_knowing_landlord()
+    {
+        $landlordUser = User::factory()->landlord()->hasHomes(2)->create();
+        $landlordUserTwo = User::factory()->landlord()->hasHomes(2)->create();
+
+        $customer =  User::factory()->customer()->create();
+        $this->be($customer);
+        $this->assertAuthenticated();
+        $this->assertTrue(auth()->user()->isCustomer());
+
+        $this->getJson(route('homes-public-index'))
+            ->assertJsonFragment([
+                "title" => $landlordUser->homes()->first()->title,
+                "purpose" => $landlordUser->homes()->first()->purpose,
+                "address" => $landlordUser->homes()->first()->address,
+                "price" => $landlordUser->homes()->first()->price,
+                "bedrooms" => $landlordUser->homes()->first()->bedrooms,
+                "bathrooms" => $landlordUser->homes()->first()->bathrooms,
+                "m_two" => $landlordUser->homes()->first()->m_two,
+                "price_m_two" => $landlordUser->homes()->first()->price_m_two,
+            ])->assertJsonFragment([
+                "title" => $landlordUser->homes()->get()->last()->title,
+                "purpose" => $landlordUser->homes()->get()->last()->purpose,
+                "address" => $landlordUser->homes()->get()->last()->address,
+                "price" => $landlordUser->homes()->get()->last()->price,
+                "bedrooms" => $landlordUser->homes()->get()->last()->bedrooms,
+                "bathrooms" => $landlordUser->homes()->get()->last()->bathrooms,
+                "m_two" => $landlordUser->homes()->get()->last()->m_two,
+                "price_m_two" => $landlordUser->homes()->get()->last()->price_m_two,
+            ])->assertJsonFragment([
+                "title" => $landlordUserTwo->homes()->first()->title,
+                "purpose" => $landlordUserTwo->homes()->first()->purpose,
+                "address" => $landlordUserTwo->homes()->first()->address,
+                "price" => $landlordUserTwo->homes()->first()->price,
+                "bedrooms" => $landlordUserTwo->homes()->first()->bedrooms,
+                "bathrooms" => $landlordUserTwo->homes()->first()->bathrooms,
+                "m_two" => $landlordUserTwo->homes()->first()->m_two,
+                "price_m_two" => $landlordUserTwo->homes()->first()->price_m_two,
+            ])->assertJsonFragment([
+                "title" => $landlordUserTwo->homes()->get()->last()->title,
+                "purpose" => $landlordUserTwo->homes()->get()->last()->purpose,
+                "address" => $landlordUserTwo->homes()->get()->last()->address,
+                "price" => $landlordUserTwo->homes()->get()->last()->price,
+                "bedrooms" => $landlordUserTwo->homes()->get()->last()->bedrooms,
+                "bathrooms" => $landlordUserTwo->homes()->get()->last()->bathrooms,
+                "m_two" => $landlordUserTwo->homes()->get()->last()->m_two,
+                "price_m_two" => $landlordUserTwo->homes()->get()->last()->price_m_two,
+            ])->assertJsonMissing([
+                'name' => $landlordUser->name,
+                'family' => $landlordUser->family,
+                'email' => $landlordUser->email,
+                'phone' => $landlordUser->phone
+            ])->assertJsonMissing([
+                'name' => $landlordUserTwo->name,
+                'family' => $landlordUserTwo->family,
+                'email' => $landlordUserTwo->email,
+                'phone' => $landlordUserTwo->phone
             ]);
     }
 }
