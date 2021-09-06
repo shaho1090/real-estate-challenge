@@ -49,4 +49,13 @@ class Distance
        return $this->distanceEstimator->getArrivalTime()
            ->diffInMinutes($this->distanceEstimator->getDepartureTime());
     }
+
+    /**
+     * @throws Exception
+     */
+    public function inCarbonInterval(): \Carbon\CarbonInterval
+    {
+       return $this->distanceEstimator->getArrivalTime()
+           ->diffAsCarbonInterval($this->distanceEstimator->getDepartureTime());
+    }
 }
