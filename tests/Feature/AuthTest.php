@@ -109,7 +109,7 @@ class AuthTest extends TestCase
         $this->postJson(route('login'),[
             'email' => $this->userData['email'],
             'password' => $this->userData['password']
-        ])->assertSeeText('access_token', 'barear');
+        ])->assertSeeText('access_token', 'bearer');
 
         $this->assertAuthenticated();
     }
