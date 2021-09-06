@@ -105,6 +105,30 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * @throws Exception
+     */
+    public function scopeEmployee($query)
+    {
+        return $query->where('type_id',UserType::employee()->id);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getAllEmployees()
+    {
+        return $this->query()->where('type_id',UserType::employee()->id)->get();
+    }
+
+    public function getCurrentAppointment()
+    {
+        return $this->employeeAppointments()
+            ->where('end_time','=', null)
+            ->where('start_time','<>',null)
+            ->first();
+    }
+
+    /**
      * @param array $request
      * @return User
      * @throws Exception
