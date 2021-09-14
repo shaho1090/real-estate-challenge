@@ -24,7 +24,8 @@ To use **POSTCODE** service you do not need any authentication, but for **HERE**
 
 If you have any questions and suggestions, please let me know. I would be so happy! 
 
-as you know:<br/>
+as you know :<br/>
+- composer install
 - create your .env file 
 - php artisan key:generate
 - php artisan migrate
